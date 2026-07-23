@@ -15,8 +15,6 @@ namespace NoteWebApi.Controllers
         {
             _appDbContext = appDbContext;
         }
-
-
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ResultNoteDto>>> GetNotes()
         {
@@ -35,9 +33,7 @@ namespace NoteWebApi.Controllers
 
             return notesDto;
         }
-
         [HttpGet("{id}")]
-
         public async Task<ActionResult<ResultNoteDto>> GetNote(int id)
         {
             var note = await _appDbContext.Notes.FindAsync(id);
@@ -57,15 +53,15 @@ namespace NoteWebApi.Controllers
             return dtoNote;
         }
         [HttpPost]
-
-        public async Task<ActionResult<ResultNoteDto>> CreateNote(CreateNoteDto createNoteDto) {
+        public async Task<ActionResult<ResultNoteDto>> CreateNote(CreateNoteDto createNoteDto)
+        {
 
             var note = new Note
             {
                 Title = createNoteDto.Title,
                 Content = createNoteDto.Content,
             };
-        
+
             _appDbContext.Notes.Add(note);
             await _appDbContext.SaveChangesAsync();
 
@@ -78,8 +74,36 @@ namespace NoteWebApi.Controllers
                 UpdatedAt = DateTime.Now,
             };
 
-            return CreatedAtAction(nameof(GetNote) ,new {id=note.Id},resultNoteDto);
+            return CreatedAtAction(nameof(GetNote), new { id = note.Id }, resultNoteDto);
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ResultNoteDto>> UpdateNote(int id, CreateNoteDto resultNote)
+        {
+            var note = await _appDbContext.Notes.FindAsync(id);
+            note.Title = resultNote.Title;
+            note.Content = resultNote.Content;
+            _appDbContext.Notes.Update(note);
+            await _appDbContext.SaveChangesAsync();
+            return Ok($"{id} ' li not guncellendi");
+        }
+
+
+
+        [HttpDelete]
+        public async Task<ActionResult> DeleteNote(int id)
+        {
+            var note = await _appDbContext.Notes.FirstAsync(x => x.Id == id);
+
+            if (note == null) return NotFound();
+
+            _appDbContext.Notes.Remove(note);
+
+            await _appDbContext.SaveChangesAsync();
+
+            return NotFound($"{id}'li not silindi");
+        }
+
 
     }
 }
