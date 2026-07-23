@@ -87,9 +87,6 @@ namespace NoteWebApi.Controllers
             await _appDbContext.SaveChangesAsync();
             return Ok($"{id} ' li not guncellendi");
         }
-
-
-
         [HttpDelete]
         public async Task<ActionResult> DeleteNote(int id)
         {
