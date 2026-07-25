@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NoteWebApi.Datas;
 using NoteWebApi.Dtos;
 using NoteWebApi.Entities;
+using NoteWebApi.Services.Repositories;
 
 namespace NoteWebApi.Controllers
 {
@@ -10,95 +13,72 @@ namespace NoteWebApi.Controllers
     [ApiController]
     public class NotesController : ControllerBase
     {
-        private readonly AppDbContext _appDbContext;
-        public NotesController(AppDbContext appDbContext)
+        private readonly INoteService _noteService;
+
+
+        public NotesController(INoteService noteService)
         {
-            _appDbContext = appDbContext;
+            _noteService = noteService;
         }
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ResultNoteDto>>> GetNotes()
+        public async Task<ActionResult> GetNotes()
         {
-            var notes = await _appDbContext.Notes.ToListAsync();
+            var result = await _noteService.GetAllNotesAsync();
 
-            var notesDto = notes.Select(x => new ResultNoteDto
-            {
+            return Ok(result.Data);
 
-                Id = x.Id,
-                Title = x.Title,
-                Content = x.Content,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-
-            }).ToList();
-
-            return notesDto;
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<ResultNoteDto>> GetNote(int id)
         {
-            var note = await _appDbContext.Notes.FindAsync(id);
+            var result = await _noteService.GetNoteByIdAsync(id);
 
-            if (note == null) return NotFound();
-
-            var dtoNote = new ResultNoteDto
+            if (!result.Success)
             {
-                Id = note.Id,
-                Title = note.Title,
-                Content = note.Content,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
+                return NotFound(result.Errors);
+            }
 
-            };
+            return Ok(result.Data);
 
-            return dtoNote;
         }
         [HttpPost]
         public async Task<ActionResult<ResultNoteDto>> CreateNote(CreateNoteDto createNoteDto)
         {
+            var result = await _noteService.CreateNoteAsync(createNoteDto);
 
-            var note = new Note
+            if (!result.Success)
             {
-                Title = createNoteDto.Title,
-                Content = createNoteDto.Content,
-            };
+                return BadRequest(result.Errors);
+            }
 
-            _appDbContext.Notes.Add(note);
-            await _appDbContext.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetNote), new { id = result.Data.Id }, result.Data);
 
-            var resultNoteDto = new ResultNoteDto
-            {
-                Id = note.Id,
-                Title = note.Title,
-                Content = note.Content,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-            };
-
-            return CreatedAtAction(nameof(GetNote), new { id = note.Id }, resultNoteDto);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<ResultNoteDto>> UpdateNote(int id, CreateNoteDto resultNote)
         {
-            var note = await _appDbContext.Notes.FindAsync(id);
-            note.Title = resultNote.Title;
-            note.Content = resultNote.Content;
-            _appDbContext.Notes.Update(note);
-            await _appDbContext.SaveChangesAsync();
-            return Ok($"{id} ' li not guncellendi");
+            var result = await _noteService.UpdateNoteAsync(id, resultNote);
+
+            if (!result.Success)
+            {
+                return BadRequest(result.Errors);
+            }
+            return NoContent();
         }
         [HttpDelete]
         public async Task<ActionResult> DeleteNote(int id)
         {
-            var note = await _appDbContext.Notes.FirstAsync(x => x.Id == id);
 
-            if (note == null) return NotFound();
+            var result = await _noteService.DeleteNoteAsync(id);
 
-            _appDbContext.Notes.Remove(note);
+            if (!result.Success)
+            {
+                return BadRequest(result.Errors);
+            }
+            return NoContent();
 
-            await _appDbContext.SaveChangesAsync();
-
-            return NotFound($"{id}'li not silindi");
         }
 
 
