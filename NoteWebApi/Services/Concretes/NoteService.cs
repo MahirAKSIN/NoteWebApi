@@ -22,7 +22,7 @@ namespace NoteWebApi.Services.Concretes
             _validator = validator;
         }
 
-        public async Task<ServiceResult<ResultNoteDto>> CreateNoteAsync(CreateNoteDto dto)
+        public async Task<ServiceResult<ResultNoteDto>> CreateNoteAsync(CreateNoteDto dto, int userId)
         {
             ValidationResult validationResult = _validator.Validate(dto);
 
@@ -32,15 +32,13 @@ namespace NoteWebApi.Services.Concretes
                 return ServiceResult<ResultNoteDto>.Fail(errorMessage);
             }
             var note = _mapper.Map<Note>(dto);
+            note.UserId = userId;
             note.CreatedAt = DateTime.Now;
             await _repository.AddAsync(note);
 
             var resultDto = _mapper.Map<ResultNoteDto>(note);
 
             return ServiceResult<ResultNoteDto>.Ok(resultDto);
-
-
-            throw new NotImplementedException();
         }
 
         public async Task<ServiceResult<bool>> DeleteNoteAsync(int id)

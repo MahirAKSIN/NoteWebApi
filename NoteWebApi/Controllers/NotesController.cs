@@ -1,20 +1,17 @@
-﻿using FluentValidation;
-using FluentValidation.Results;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using NoteWebApi.Datas;
 using NoteWebApi.Dtos;
-using NoteWebApi.Entities;
 using NoteWebApi.Services.Repositories;
+using System.Security.Claims;
 
 namespace NoteWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class NotesController : ControllerBase
     {
         private readonly INoteService _noteService;
-
 
         public NotesController(INoteService noteService)
         {
@@ -27,8 +24,8 @@ namespace NoteWebApi.Controllers
             var result = await _noteService.GetAllNotesAsync();
 
             return Ok(result.Data);
-
         }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ResultNoteDto>> GetNote(int id)
         {
@@ -40,12 +37,18 @@ namespace NoteWebApi.Controllers
             }
 
             return Ok(result.Data);
-
         }
+
         [HttpPost]
         public async Task<ActionResult<ResultNoteDto>> CreateNote(CreateNoteDto createNoteDto)
         {
-            var result = await _noteService.CreateNoteAsync(createNoteDto);
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized();
+            }
+
+            var result = await _noteService.CreateNoteAsync(createNoteDto, userId);
 
             if (!result.Success)
             {
@@ -53,7 +56,6 @@ namespace NoteWebApi.Controllers
             }
 
             return CreatedAtAction(nameof(GetNote), new { id = result.Data.Id }, result.Data);
-
         }
 
         [HttpPut("{id}")]
@@ -67,10 +69,10 @@ namespace NoteWebApi.Controllers
             }
             return NoContent();
         }
-        [HttpDelete]
+
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteNote(int id)
         {
-
             var result = await _noteService.DeleteNoteAsync(id);
 
             if (!result.Success)
@@ -78,9 +80,6 @@ namespace NoteWebApi.Controllers
                 return BadRequest(result.Errors);
             }
             return NoContent();
-
         }
-
-
     }
 }
