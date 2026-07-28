@@ -21,7 +21,13 @@ ASP.NET Core 9 Web API for managing notes and users with JWT authentication, Ent
 
 ## Configuration
 
-Update `NoteWebApi/appsettings.json`:
+Secrets are **not** committed. Use a local Development settings file:
+
+```bash
+copy NoteWebApi\appsettings.Development.json.example NoteWebApi\appsettings.Development.json
+```
+
+Then edit `NoteWebApi/appsettings.Development.json`:
 
 ```json
 {
@@ -35,6 +41,8 @@ Update `NoteWebApi/appsettings.json`:
   }
 }
 ```
+
+`appsettings.json` only keeps placeholders. `appsettings.Development.json` is gitignored.
 
 ## Run
 
@@ -128,4 +136,4 @@ NoteWebApi/
 
 - `Notes` are linked to `Users` via `UserId` (cascade delete).
 - Passwords are stored as BCrypt hashes, never plain text.
-- Do not commit real production secrets; keep JWT `SecretKey` and connection strings out of public repos when possible.
+- Put real connection strings and JWT secrets only in `appsettings.Development.json` (ignored by git).

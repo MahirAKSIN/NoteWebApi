@@ -1,0 +1,16 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=YOUR_SERVER;Database=NoteAppDB;Trusted_Connection=True;TrustServerCertificate=True"
+  },
+  "JwtSettings": {
+    "SecretKey": "YOUR_LONG_SECRET_KEY_AT_LEAST_32_CHARS",
+    "Issuer": "NotesApi",
+    "Audience": "NotesApiClient"
+  }
+}
