@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NoteWebApi.Datas;
 using NoteWebApi.Entities;
-using NoteWebApi.Repository.Interface;
+using NoteWebApi.Repository.Interfaces;
 
 namespace NoteWebApi.Repository.Concretes
 {

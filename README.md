@@ -1,12 +1,23 @@
 # NoteWebApi
 
-ASP.NET Core 9 Web API for managing notes with Entity Framework Core and SQL Server.
+ASP.NET Core 9 Web API for managing notes and users with Entity Framework Core and SQL Server.
 
 ## Features
 
 - Notes CRUD endpoints
+- User creation and user listing/get-by-id endpoints
+- FluentValidation for request validation
+- AutoMapper for entity/DTO mapping
+- BCrypt password hashing for stored user passwords
 - EF Core + SQL Server
 - Swagger / OpenAPI in development
+
+## Recent Updates
+
+- Added `User` entity and `Notes -> User` relationship
+- Added user DTOs, validator, repository, service, and controller layers
+- Registered user dependencies in DI container
+- Added EF Core migration for user table and note-user relationship
 
 ## Requirements
 

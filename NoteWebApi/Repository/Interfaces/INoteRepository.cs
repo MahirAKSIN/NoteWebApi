@@ -1,6 +1,6 @@
 ﻿using NoteWebApi.Entities;
 
-namespace NoteWebApi.Repository.Interface
+namespace NoteWebApi.Repository.Interfaces
 {
     public interface INoteRepository
     {

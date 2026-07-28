@@ -4,7 +4,7 @@ using FluentValidation.Results;
 using NoteWebApi.Common;
 using NoteWebApi.Dtos;
 using NoteWebApi.Entities;
-using NoteWebApi.Repository.Interface;
+using NoteWebApi.Repository.Interfaces;
 using NoteWebApi.Services.Repositories;
 
 namespace NoteWebApi.Services.Concretes

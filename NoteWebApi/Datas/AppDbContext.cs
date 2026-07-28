@@ -12,6 +12,7 @@ namespace NoteWebApi.Datas
 
 
         public DbSet<Note> Notes { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,12 +31,36 @@ namespace NoteWebApi.Datas
                      HasMaxLength(1000);
 
                 entity.Property(q => q.CreatedAt).
-                     IsRequired().
-                     HasDefaultValueSql("getDate()");
+                       IsRequired().
+                       HasDefaultValueSql("getDate()");
 
                 entity.Property(q => q.UpdatedAt).
-                    IsRequired(false);
+                       IsRequired(false);
+
+                entity.HasOne(n => n.User).
+                       WithMany(n => n.Notes).
+                       OnDelete(DeleteBehavior.Cascade);
             });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(q => q.Id);
+
+                entity.Property(q => q.UserName).
+                       IsRequired().
+                       HasMaxLength(50);
+                entity.Property(q => q.UserEmail).
+                       IsRequired().
+                       HasMaxLength(150);
+                entity.Property(q => q.PasswordHash).
+                       IsRequired();
+                entity.Property(q => q.CreatedAt).
+                       IsRequired().
+                       HasDefaultValueSql("getDate()");
+
+            });
+
+
             base.OnModelCreating(modelBuilder);
         }
     }
