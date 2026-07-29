@@ -14,6 +14,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();  
+
+
 builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", opt =>
 {
     var jwtSettings = builder.Configuration.GetSection("JwtSettings");

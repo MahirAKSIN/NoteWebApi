@@ -5,7 +5,8 @@ ASP.NET Core 9 Web API for managing notes and users with JWT authentication, Ent
 ## Features
 
 - JWT Bearer authentication (login + protected note endpoints)
-- Notes CRUD (authorized)
+- Login also sets an HttpOnly cookie (`acces_token`) for 1 hour
+- Notes CRUD with ownership checks (get / update / delete)
 - User registration and listing
 - FluentValidation for request validation
 - AutoMapper for entity/DTO mapping
@@ -57,11 +58,11 @@ Swagger UI: `https://localhost:7192/swagger`
 ## Auth flow
 
 1. Create a user: `POST /api/User`
-2. Login: `POST /api/Auth/login` → returns `{ "token": "..." }`
+2. Login: `POST /api/Auth/login` → returns `{ "token": "..." }` and sets cookie `acces_token`
 3. In Swagger, click **Authorize** and paste the token (without `Bearer ` prefix if Swagger already adds it)
 4. Call note endpoints with the JWT
 
-Token lifetime: **60 minutes**.
+Token / cookie lifetime: **60 minutes**.
 
 ## API Endpoints
 
@@ -69,7 +70,7 @@ Token lifetime: **60 minutes**.
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| `POST` | `/api/Auth/login` | No | Login and get JWT |
+| `POST` | `/api/Auth/login` | No | Login, get JWT, set HttpOnly cookie |
 
 **Login body**
 
@@ -102,11 +103,11 @@ Token lifetime: **60 minutes**.
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| `GET` | `/api/Notes` | Yes | List notes |
-| `GET` | `/api/Notes/{id}` | Yes | Get note by id |
+| `GET` | `/api/Notes` | Yes | List all notes |
+| `GET` | `/api/Notes/{id}` | Yes | Get own note by id |
 | `POST` | `/api/Notes` | Yes | Create note (owner = logged-in user) |
-| `PUT` | `/api/Notes/{id}` | Yes | Update note |
-| `DELETE` | `/api/Notes/{id}` | Yes | Delete note |
+| `PUT` | `/api/Notes/{id}` | Yes | Update own note |
+| `DELETE` | `/api/Notes/{id}` | Yes | Delete own note |
 
 **Create / update note body**
 
@@ -116,6 +117,12 @@ Token lifetime: **60 minutes**.
   "content": "Discuss API auth and ownership"
 }
 ```
+
+## Ownership rules
+
+- Every note is tied to a `UserId` from the JWT `NameIdentifier` claim.
+- `GET /{id}`, `PUT /{id}`, and `DELETE /{id}` only succeed for the note owner.
+- Accessing another user's note returns an authorization/ownership error.
 
 ## Project structure
 

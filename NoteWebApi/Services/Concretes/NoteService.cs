@@ -41,25 +41,36 @@ namespace NoteWebApi.Services.Concretes
             return ServiceResult<ResultNoteDto>.Ok(resultDto);
         }
 
-        public async Task<ServiceResult<bool>> DeleteNoteAsync(int id)
+        public async Task<ServiceResult<bool>> DeleteNoteAsync(int id, int userId)
         {
             var existingNote = await _repository.GetByIdAsync(id);
             if (existingNote == null)
             {
                 return ServiceResult<bool>.Fail(new List<string> { "Not bulunamadı" });
             }
+
+            if (existingNote.UserId != userId)
+            {
+                return ServiceResult<bool>.Fail(new List<string> { "Bu Not değiştirmeye yetkiniz yok" });
+            }
+
+
             await _repository.DeleteByIdAsync(existingNote);
 
 
             return ServiceResult<bool>.Ok(true);
         }
 
-        public async Task<ServiceResult<ResultNoteDto>> GetNoteByIdAsync(int id)
+        public async Task<ServiceResult<ResultNoteDto>> GetNoteByIdAsync(int id, int userId)
         {
             var note = await _repository.GetByIdAsync(id);
             if (note == null)
             {
                 return ServiceResult<ResultNoteDto>.Fail(new List<string> { "Not Bulunamadı" });
+            }
+            if (note.UserId != userId)
+            {
+                return ServiceResult<ResultNoteDto>.Fail(new List<string> { "Bu Nota erişim yetkiniz yok" });
             }
             var noteDto = _mapper.Map<ResultNoteDto>(note);
             return ServiceResult<ResultNoteDto>.Ok(noteDto);
@@ -73,7 +84,7 @@ namespace NoteWebApi.Services.Concretes
             return ServiceResult<List<ResultNoteDto>>.Ok(notesDto);
         }
 
-        public async Task<ServiceResult<ResultNoteDto>> UpdateNoteAsync(int id, CreateNoteDto dto)
+        public async Task<ServiceResult<ResultNoteDto>> UpdateNoteAsync(int id, CreateNoteDto dto, int userId)
         {
             ValidationResult validationResult = _validator.Validate(dto);
 
@@ -90,12 +101,21 @@ namespace NoteWebApi.Services.Concretes
             {
                 return ServiceResult<ResultNoteDto>.Fail(new List<string> { "Not bulunamadı" });
             }
+            if (existingNote.UserId != userId)
+            {
+                return ServiceResult<ResultNoteDto>.Fail(new List<string> { "Bu Not değiştirmeye yetkiniz yok" });
+            }
+
+
+            existingNote.Title = dto.Title;
+            existingNote.Content = dto.Content;
+            existingNote.UpdatedAt = DateTime.Now;
+
             await _repository.UpdateAsync(existingNote);
             var resultDto = _mapper.Map<ResultNoteDto>(existingNote);
 
             return ServiceResult<ResultNoteDto>.Ok(resultDto);
 
         }
-
     }
 }

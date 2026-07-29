@@ -14,10 +14,12 @@ namespace NoteWebApi.Repository.Concretes
 
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
-        public AuthService(IUserRepository userRepository, IConfiguration configuration)
+        private readonly IHttpContextAccessor _contextAccessor;
+        public AuthService(IUserRepository userRepository, IConfiguration configuration, IHttpContextAccessor contextAccessor)
         {
             _configuration = configuration;
             _userRepository = userRepository;
+            _contextAccessor = contextAccessor;
         }
 
         public async Task<ServiceResult<string>> LoginAsync(LoginDto dto)
@@ -38,6 +40,15 @@ namespace NoteWebApi.Repository.Concretes
             }
 
             var token = GenerateJwtToken(user);
+
+            _contextAccessor.HttpContext.Response.Cookies.Append("acces_token", token, new CookieOptions
+            {
+                Secure = true,
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddHours(1)
+            });
+
 
             return ServiceResult<string>.Ok(token);
 

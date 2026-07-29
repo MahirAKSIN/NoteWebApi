@@ -29,7 +29,13 @@ namespace NoteWebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ResultNoteDto>> GetNote(int id)
         {
-            var result = await _noteService.GetNoteByIdAsync(id);
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized(new List<string> { "Kullanıcı bilgisi  bulunmuyor" });
+            }
+
+            var result = await _noteService.GetNoteByIdAsync(id,userId);
 
             if (!result.Success)
             {
@@ -45,7 +51,7 @@ namespace NoteWebApi.Controllers
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!int.TryParse(userIdClaim, out var userId))
             {
-                return Unauthorized();
+                return Unauthorized(new List<string> { "Kullanıcı bilgisi  bulunmuyor" });
             }
 
             var result = await _noteService.CreateNoteAsync(createNoteDto, userId);
@@ -61,7 +67,14 @@ namespace NoteWebApi.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<ResultNoteDto>> UpdateNote(int id, CreateNoteDto resultNote)
         {
-            var result = await _noteService.UpdateNoteAsync(id, resultNote);
+
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized(new List<string> { "Kullanıcı bilgisi  bulunmuyor" });
+            }
+
+            var result = await _noteService.UpdateNoteAsync(id, resultNote,userId);
 
             if (!result.Success)
             {
@@ -73,7 +86,15 @@ namespace NoteWebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteNote(int id)
         {
-            var result = await _noteService.DeleteNoteAsync(id);
+
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized(new List<string> { "Kullanıcı bilgisi  bulunmuyor" });
+            }
+
+
+            var result = await _noteService.DeleteNoteAsync(id,userId);
 
             if (!result.Success)
             {

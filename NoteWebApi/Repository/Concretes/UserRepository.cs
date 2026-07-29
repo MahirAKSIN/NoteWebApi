@@ -32,6 +32,7 @@ namespace NoteWebApi.Repository.Concretes
             return await _appDbContext.Users.Include(q => q.Notes).ToListAsync();
         }
 
+
         public async Task<User> GetByIdAsync(int id)
         {
             return await _appDbContext.Users.Include(q => q.Notes).FirstOrDefaultAsync(a => a.Id == id);
