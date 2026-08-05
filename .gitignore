@@ -49,3 +49,11 @@ appsettings.*.local.json
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+## Frontend (React / Vite)
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.env
+frontend/.env.*
+frontend/*.local
