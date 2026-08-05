@@ -19,7 +19,7 @@ namespace NoteWebApi.Controllers
         {
             var result = await _userService.CreateUserAsync(dto);
 
-            if (result == null)
+            if (!result.Success)
             {
                 return BadRequest(result.Errors);
             }
@@ -32,9 +32,9 @@ namespace NoteWebApi.Controllers
         public async Task<IActionResult> GetUser(int id)
         {
             var result = await _userService.GetByIdUserAsync(id);
-            if (result == null)
+            if (!result.Success)
             {
-                return BadRequest(result.Errors);
+                return NotFound(result.Errors);
             }
             return Ok(result.Data);
 

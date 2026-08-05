@@ -14,7 +14,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpContextAccessor();  
+builder.Services.AddHttpContextAccessor();
 
 
 builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", opt =>
@@ -35,6 +35,18 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer", opt =>
     };
 
 });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173", "http://localhost:5174").
+               AllowAnyMethod().
+               AllowAnyHeader().
+               AllowCredentials();
+    });
+});
+
 
 // Add services to the container.
 builder.Services.AddAutoMapper(typeof(NoteProfile));
@@ -94,7 +106,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("AllowReactApp");
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
