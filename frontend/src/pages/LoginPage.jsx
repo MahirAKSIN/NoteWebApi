@@ -31,15 +31,34 @@ const LoginPage = () => {
     }
 
     return (
-        <>
-            <h2>Giriş Yap</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSumbit}>
-                <input type="text" placeholder='Kullanıcı Adı' value={username} onChange={(e) => setUsername(e.target.value)} />
-                <input type="password" placeholder='Kullanıcı Sifresi' value={password} onChange={(e) => setPassword(e.target.value)} />
-                <button type='submit'>Giris Yap</button>
+        <div className="page">
+            <form className="card card-form" onSubmit={handleSumbit}>
+                <h2 className="page-title">Giriş Yap</h2>
+                <p className="page-subtitle">Notlarına erişmek için hesabınla giriş yap.</p>
+                {error && <p className="error-text">{error}</p>}
+                <div className="field">
+                    <label htmlFor="username">Kullanıcı Adı</label>
+                    <input
+                        id="username"
+                        type="text"
+                        placeholder="Kullanıcı Adı"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                </div>
+                <div className="field">
+                    <label htmlFor="password">Şifre</label>
+                    <input
+                        id="password"
+                        type="password"
+                        placeholder="Şifre"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </div>
+                <button className="btn btn-primary btn-block" type="submit">Giriş Yap</button>
             </form>
-        </>
+        </div>
     )
 }
 

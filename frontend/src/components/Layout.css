@@ -1,0 +1,252 @@
+.app-layout {
+  --bg-1: #e8f0ee;
+  --bg-2: #d5e4df;
+  --ink: #1a2e2a;
+  --ink-soft: #4a635c;
+  --card: #f7faf8;
+  --card-border: #c5d6d0;
+  --accent: #0f766e;
+  --accent-hover: #0d5f59;
+  --danger: #b42318;
+  --danger-hover: #912018;
+  --shadow: 0 10px 30px rgba(26, 46, 42, 0.08);
+  --radius: 16px;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 12% 18%, rgba(15, 118, 110, 0.12), transparent 40%),
+    radial-gradient(circle at 88% 8%, rgba(26, 46, 42, 0.08), transparent 35%),
+    linear-gradient(160deg, var(--bg-1), var(--bg-2));
+  background-attachment: fixed;
+}
+
+.app-layout *,
+.app-layout *::before,
+.app-layout *::after {
+  box-sizing: border-box;
+}
+
+.app-layout button,
+.app-layout input,
+.app-layout textarea {
+  font: inherit;
+}
+
+.app-layout a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.app-layout .page {
+  width: min(960px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2.5rem 0 3rem;
+}
+
+.app-layout .page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.app-layout .page-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3vw, 2.4rem);
+  letter-spacing: -0.02em;
+}
+
+.app-layout .page-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--ink-soft);
+}
+
+.app-layout .card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem 1.35rem;
+}
+
+.app-layout .card-form {
+  width: min(480px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.app-layout .card-form .page-title {
+  margin-bottom: 0.25rem;
+}
+
+.app-layout .notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.app-layout .note-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 180px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.app-layout .note-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(26, 46, 42, 0.12);
+}
+
+.app-layout .note-card-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.25;
+}
+
+.app-layout .note-card-content {
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.app-layout .note-card-meta {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.app-layout .note-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.app-layout .field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.app-layout .field label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.app-layout .field input,
+.app-layout .field textarea {
+  width: 100%;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  background: #fff;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.app-layout .field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.app-layout .field input:focus,
+.app-layout .field textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+}
+
+.app-layout .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border: none;
+  border-radius: 10px;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.app-layout .btn:active {
+  transform: translateY(1px);
+}
+
+.app-layout .btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.app-layout .btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+.app-layout .btn-secondary {
+  background: #e2eeea;
+  color: var(--ink);
+}
+
+.app-layout .btn-secondary:hover {
+  background: #d3e4df;
+}
+
+.app-layout .btn-danger {
+  background: #fce8e6;
+  color: var(--danger);
+}
+
+.app-layout .btn-danger:hover {
+  background: #f9d4d0;
+  color: var(--danger-hover);
+}
+
+.app-layout .btn-block {
+  width: 100%;
+}
+
+.app-layout .error-text {
+  margin: 0;
+  color: var(--danger);
+  font-size: 0.95rem;
+}
+
+.app-layout .status-text {
+  margin: 2rem 0;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.app-layout .form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+@media (max-width: 640px) {
+  .app-layout .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .app-layout .page-header .btn {
+    width: 100%;
+  }
+}
