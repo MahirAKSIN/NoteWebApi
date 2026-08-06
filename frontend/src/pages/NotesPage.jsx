@@ -1,20 +1,42 @@
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { fetchNotes } from '../services/noteService'
+import { Link } from 'react-router-dom'
 
 const NotesPage = () => {
-    const navigate = useNavigate()
-    const token = localStorage.getItem("token")
+    const [notes, setNotes] = useState([])
+    const [loading, setLoading] = useState(true)
 
-    const handleLogout = () => {
-        localStorage.removeItem("token")
-        navigate("/login")
+    useEffect(() => {
+        loadNotes();
+    }, [])
+
+    const loadNotes = async () => {
+        try {
+            setLoading(true);
+            const res = await fetchNotes();
+            setNotes(res.data)
+        } catch (error) {
+            console.error("Notlar yuklenirken bir hata meydana geldi", error);
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
         <>
-            <h2>Notlarım</h2>
-            <p>Giriş başarılı. Token kaydedildi.</p>
-            <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{token}</pre>
-            <button onClick={handleLogout}>Çıkış Yap</button>
+            <Link to={"/add-note"}>
+                <button>Yeni Not Ekle</button>
+            </Link>
+
+            {loading ? <p>Yukleniyor...</p> : (
+                <ul>
+                    {
+                        notes.map((note) => (
+                            <li key={note.id}>{note.title}----{note.content}</li>
+                        ))
+                    }
+                </ul>
+            )}
         </>
     )
 }

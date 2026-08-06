@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Cookies from "js-cookie"
 
@@ -12,28 +12,28 @@ const LoginPage = () => {
 
     const handleSumbit = async (e) => {
         e.preventDefault();
-       
-     try {
-           const res = await axios.post("https://localhost:7192/api/auth/login", {
-            username: username.trim(), password
-        });
-         console.log(username, password);
-       // localStorage.setItem("token", res.data.token)
-       Cookies.set("acces_token",res.data.token,{expires:7});
-        navigate("/notes")
-     } catch (err) {
-        const data = err.response?.data;
-        setError(
-            Array.isArray(data) ? data.join(", ")
-            : typeof data === "string" ? data
-            : err.message
-        );
-     }
+
+        try {
+            const res = await axios.post("https://localhost:7192/api/auth/login", {
+                username: username.trim(), password
+            });
+
+            Cookies.set("access_token", res.data.token, { expires: 7 });
+            navigate("/notes")
+        } catch (err) {
+            const data = err.response?.data;
+            setError(
+                Array.isArray(data) ? data.join(", ")
+                    : typeof data === "string" ? data
+                        : err.message
+            );
+        }
     }
+
     return (
         <>
             <h2>Giriş Yap</h2>
-            {error&& <p style={{color:'red'}}>{error}</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleSumbit}>
                 <input type="text" placeholder='Kullanıcı Adı' value={username} onChange={(e) => setUsername(e.target.value)} />
                 <input type="password" placeholder='Kullanıcı Sifresi' value={password} onChange={(e) => setPassword(e.target.value)} />
